@@ -17,6 +17,7 @@ import PresAdd from "../screens/Presentations/añadir";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "../providers/Context";
 import { Ionicons } from '@expo/vector-icons';
+import LABADDSCREEN from "../screens/Labs/añadir";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -63,9 +64,9 @@ function LabsStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="LaboratoriosScreen" component={LaboratoriosScreen} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="ProductScreen" component={ProductScreen}
+             <Stack.Screen name="LABADDSCREEN" component={LABADDSCREEN}
                 options={{
-                    title: 'Producto',
+                    title: 'Nuevo Laboratorio',
                     headerStyle: {
                         backgroundColor: '#00ADB5',
                     },
@@ -74,7 +75,7 @@ function LabsStack() {
                         fontWeight: 'bold',
                     },
                 }}
-            /> */}
+            /> 
         </Stack.Navigator>
     );
 }
