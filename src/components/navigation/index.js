@@ -13,6 +13,7 @@ import InformationScreen from '../screens/Information'
 import RPasswordScreen from "../screens/RPassword";
 import ProfileScreen from "../screens/Profile"
 import NewPScreen from "../screens/Products/añadir";
+import PresAdd from "../screens/Presentations/añadir";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "../providers/Context";
 import { Ionicons } from '@expo/vector-icons';
@@ -43,9 +44,9 @@ function PresentationStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="PresentacionesScreen" component={PresentacionesScreen} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="ProductScreen" component={ProductScreen}
+            <Stack.Screen name="PresAdd" component={PresAdd}
                 options={{
-                    title: 'Producto',
+                    title: 'Nueva Presentacion',
                     headerStyle: {
                         backgroundColor: '#00ADB5',
                     },
@@ -54,7 +55,7 @@ function PresentationStack() {
                         fontWeight: 'bold',
                     },
                 }}
-            /> */}
+            />
         </Stack.Navigator>
     );
 }

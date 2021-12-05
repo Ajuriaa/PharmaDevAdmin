@@ -10,7 +10,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const PresentacionesScreen = () => {
+const PresentacionesScreen = ({navigation}) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -126,7 +126,7 @@ const PresentacionesScreen = () => {
                     </RefreshControl>
                 </View>
                 <View style={{ height:60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} >
+                    <TouchableOpacity style={styles.appButtonContainer} onPress={()=>{navigation.navigate('PresAdd')}}>
                         <Text style={styles.appButtonText}>AÑADIR UNA PRESENTACION</Text>
                     </TouchableOpacity>
                 </View>
