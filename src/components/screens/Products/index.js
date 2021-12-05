@@ -10,7 +10,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const ProductScreen = () => {
+const ProductScreen = ({navigation}) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -64,6 +64,14 @@ const ProductScreen = () => {
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }} >L.{item.ProductoPrecio}</Text>
                         </View>
+                        <View style={styles.row} >
+                            <View style={{ flex: 1 }}></View>
+                            <View style={{ flex: 1 }}>
+                                <View style={styles.txtContador}>
+                                    <Text style={styles.txtContadorTexto}>{item.Inventarios[0].InventarioExistencia}</Text>
+                                </View>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -103,7 +111,7 @@ const ProductScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
-                <View style={{ height:100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ height: 100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{
                         color: 'white',
                         fontSize: 22,
@@ -114,7 +122,7 @@ const ProductScreen = () => {
                         placeholder="🔎"
                         inputStyle={{ backgroundColor: 'white', borderRadius: 7, padding: 10 }}
                         value={search}
-                        onChangeText={search => { setSearch(search);searchProducts(search)  }}
+                        onChangeText={search => { setSearch(search); searchProducts(search) }}
                     />
                 </View>
                 <View style={{ flex: 6 }}>
@@ -131,8 +139,8 @@ const ProductScreen = () => {
                         />
                     </RefreshControl>
                 </View>
-                <View style={{ height:60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} >
+                <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                    <TouchableOpacity style={styles.appButtonContainer} onPress={()=>{navigation.navigate('NewPScreen')}}>
                         <Text style={styles.appButtonText}>AÑADIR UN PRODUCTO</Text>
                     </TouchableOpacity>
                 </View>
@@ -163,12 +171,36 @@ const styles = StyleSheet.create({
         color: "#fff",
         alignSelf: "center",
         textTransform: "uppercase"
-    },producto: {
+    }, producto: {
         height: 120,
         backgroundColor: "white",
         borderRadius: 7,
         marginTop: 20,
         flexDirection: "row",
         padding: 5
+    }, txtContador: {
+        backgroundColor: "#00ADB5",
+        borderRadius: 7,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        shadowColor: "#00ADB5",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+        marginLeft: 10,
+        marginRight: 10
+    },
+    txtContadorTexto: {
+        fontSize: 16,
+        color: "#fff",
+        alignSelf: "center",
+        textTransform: "uppercase",
+        fontWeight: 'bold'
+    },row:{
+        flex: 1, 
+        flexDirection: "row"
     },
 })

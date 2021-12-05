@@ -12,6 +12,7 @@ import LaboratoriosScreen from "../screens/Labs/Index";
 import InformationScreen from '../screens/Information'
 import RPasswordScreen from "../screens/RPassword";
 import ProfileScreen from "../screens/Profile"
+import NewPScreen from "../screens/Products/añadir";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "../providers/Context";
 import { Ionicons } from '@expo/vector-icons';
@@ -23,9 +24,9 @@ function ProductStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="ProductScreen" component={ProductScreen} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="ProductScreen" component={ProductScreen}
+            <Stack.Screen name="NewPScreen" component={NewPScreen}
                 options={{
-                    title: 'Producto',
+                    title: 'Nuevo Producto',
                     headerStyle: {
                         backgroundColor: '#00ADB5',
                     },
@@ -34,7 +35,7 @@ function ProductStack() {
                         fontWeight: 'bold',
                     },
                 }}
-            /> */}
+            />
         </Stack.Navigator>
     );
 }
