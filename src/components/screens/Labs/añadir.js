@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Button, Image, Input } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import defaultIMG from '../../../assets/default.jpg'
@@ -22,7 +22,7 @@ const LABADDSCREEN = () => {
                 var jsonValue = await AsyncStorage.getItem('@usuario')
                 jsonValue = JSON.parse(jsonValue)
 
-                const respone = await fetch("http://192.168.0.108:7777/api/laboratorio/addL", {
+                const respone = await fetch("http://192.168.0.2:7777/api/laboratorio/addL", {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -50,10 +50,10 @@ const LABADDSCREEN = () => {
             <ScrollView>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
 
-                    <Input label='Nombre de la farmacia' value={nombre} onChange={setNombre} />
-                    <Input label='Descripcion de la farmacia' value={descripcion} onChange={setDescripcion} />
+                    <Input label='Nombre de la farmacia' value={LaboratorioNombre} onChange={setNombre} />
+                    <Input label='Descripcion de la farmacia' value={LaboratorioDescripcion} onChange={setDescripcion} />
 
-                    <Button title='Guardar farmacia' containerStyle={{ marginBottom: 10, width: '90%' }} buttonStyle={styles.boton} />
+                    <Button title='Guardar farmacia' containerStyle={{ marginBottom: 10, width: '90%' }} buttonStyle={styles.boton} onPress={pressGuardar}/>
                 </View>
             </ScrollView>
         </SafeAreaView>
