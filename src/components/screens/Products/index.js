@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Alert, } from 'react-native';
+import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Alert, ScrollView, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, Image, Text } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("screen");
 import Icons from "react-native-vector-icons/FontAwesome";
+import { StatusBar } from 'expo-status-bar';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -17,7 +18,12 @@ const ProductScreen = ({ navigation }) => {
     const [filteredData, setFilteredData] = useState([])
     const [refreshing, setRefreshing] = React.useState(false);
 
-    useEffect(() => { getData() }, []);
+    useEffect(() => {
+        const reloadOnFocus = navigation.addListener('focus', () => {
+            getData()
+        });
+        return reloadOnFocus;
+    }, [navigation]);
 
     const getData = async () => {
         if (!loading) {
@@ -47,7 +53,7 @@ const ProductScreen = ({ navigation }) => {
         }
     };
 
-    const eliminar = async (ProductoId)=>{
+    const eliminar = async (ProductoId) => {
         if (!loading) {
             setLoading(true);
             try {
@@ -71,7 +77,7 @@ const ProductScreen = ({ navigation }) => {
                     setFilteredData([])
                     setSearch('')
                 } else {
-                    Alert.alert('Pharmadev',responseJson.msj)
+                    Alert.alert('Pharmadev', responseJson.msj)
                 }
                 setLoading(false);
             } catch (error) {
@@ -99,9 +105,9 @@ const ProductScreen = ({ navigation }) => {
                                 borderRadius: 7,
                                 paddingHorizontal: 20,
                                 textAlign: 'center',
-                                textAlignVertical:'center'
+                                textAlignVertical: 'center'
                             }}
-                            onPress={_ => eliminar(item.id)} />
+                                onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }} >L.{item.ProductoPrecio}</Text>
@@ -136,7 +142,7 @@ const ProductScreen = ({ navigation }) => {
     };
 
     const getItem = (item) => {
-        navigation.navigate('EditPScren', { data: item})
+        navigation.navigate('EditPScren', { data: item })
     };
 
     const searchProducts = async (kword) => {
@@ -153,41 +159,40 @@ const ProductScreen = ({ navigation }) => {
     }, [])
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-                <View style={{ height: 100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{
-                        color: 'white',
-                        fontSize: 22,
-                        fontWeight: 'bold',
-                        marginTop: 10
-                    }}>Productos</Text>
-                    <Input
-                        placeholder="🔎"
-                        inputStyle={{ backgroundColor: 'white', borderRadius: 7, padding: 10 }}
-                        value={search}
-                        onChangeText={search => { setSearch(search); searchProducts(search) }}
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#EEE' }}>
+            <StatusBar style="light" backgroundColor='#00ADB5' />
+            <View style={{ height: 100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{
+                    color: 'white',
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    marginTop: 10
+                }}>Productos</Text>
+                <Input
+                    placeholder="🔎"
+                    inputStyle={{ backgroundColor: 'white', borderRadius: 7, padding: 10 }}
+                    value={search}
+                    onChangeText={search => { setSearch(search); searchProducts(search) }}
+                />
+            </View>
+            <View style={{ flex: 6 }}>
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                >
+                    <FlatList
+                        data={filteredData && filteredData.length > 0 ? filteredData : dataSource}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={ItemView}
+                        ListFooterComponent={renderFooter}
+                        initialNumToRender={6}
                     />
-                </View>
-                <View style={{ flex: 6 }}>
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    >
-                        <FlatList
-                            data={filteredData && filteredData.length > 0 ? filteredData : dataSource}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={ItemView}
-                            ListFooterComponent={renderFooter}
-                            initialNumToRender={6}
-                        />
-                    </RefreshControl>
-                </View>
-                <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} onPress={() => { navigation.navigate('NewPScreen') }}>
-                        <Text style={styles.appButtonText}>AÑADIR UN PRODUCTO</Text>
-                    </TouchableOpacity>
-                </View>
+                </RefreshControl>
+            </View>
+            <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity style={styles.appButtonContainer} onPress={() => { navigation.navigate('NewPScreen') }}>
+                    <Text style={styles.appButtonText}>AÑADIR UN PRODUCTO</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

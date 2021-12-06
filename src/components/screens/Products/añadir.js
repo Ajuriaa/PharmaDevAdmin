@@ -80,31 +80,6 @@ const NewPScreen = ({ navigation }) => {
             quality: 1,
         });
         if (!result.cancelled) {
-            /* try {
-                let fileType = result.uri.substring(result.uri.lastIndexOf(".") + 1);
-                let formData = new FormData();
-                formData.append("photo", {
-                    uri: result.uri,
-                    name: `photo.${fileType}`,
-                    type: `image/${fileType}`
-                });
-                var jsonValue = await AsyncStorage.getItem('@usuario')
-                jsonValue = JSON.parse(jsonValue)
-                formData.append('Id', jsonValue.Id)
-                const response = await fetch('http://192.168.0.2:7777/api/usuario/profileIMG', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': 'Bearer ' + jsonValue.token,
-                    },
-                    body: formData,
-                });
-                const responseJson = await response.json();
-                setTimeout(() => setUrl(`http://192.168.0.2:7777/users/${jsonValue.Id}.png?${Math.random()}`), 1000)
-            } catch (error) {
-                console.log(error);
-            } */
             setUrl(result.uri)
             setImagen(result)
         }

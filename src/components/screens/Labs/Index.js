@@ -18,7 +18,12 @@ const LaboratoriosScreen = ({ navigation }) => {
     const [filteredData, setFilteredData] = useState([])
     const [refreshing, setRefreshing] = React.useState(false);
 
-    useEffect(() => { getData() }, []);
+    useEffect(() => {
+        const reloadOnFocus = navigation.addListener('focus', () => {
+            getData()
+        });
+        return reloadOnFocus;
+    }, [navigation]);
 
     const getData = async () => {
         if (!loading) {
@@ -122,7 +127,7 @@ const LaboratoriosScreen = ({ navigation }) => {
     };
 
     const getItem = (item) => {
-        navigation.navigate('LabEdit', { data: item})
+        navigation.navigate('LabEdit', { data: item })
     };
 
     const searchProducts = async (kword) => {

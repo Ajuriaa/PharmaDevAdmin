@@ -10,14 +10,19 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const PresentacionesScreen = ({navigation}) => {
+const PresentacionesScreen = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const [filteredData, setFilteredData] = useState([])
     const [refreshing, setRefreshing] = React.useState(false);
 
-    useEffect(() => { getData() }, []);
+    useEffect(() => {
+        const reloadOnFocus = navigation.addListener('focus', () => {
+            getData()
+        });
+        return reloadOnFocus;
+    }, [navigation]);
 
     const getData = async () => {
         if (!loading) {
@@ -32,7 +37,6 @@ const PresentacionesScreen = ({navigation}) => {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + jsonValue.token,
                     },
-
                 });
                 const responseJson = await response.json();
                 if (responseJson.data.length > 0) {
@@ -47,7 +51,7 @@ const PresentacionesScreen = ({navigation}) => {
         }
     };
 
-    const eliminar = async (PresentacionId)=>{
+    const eliminar = async (PresentacionId) => {
         if (!loading) {
             setLoading(true);
             try {
@@ -63,7 +67,6 @@ const PresentacionesScreen = ({navigation}) => {
                     body: JSON.stringify({
                         Id: PresentacionId
                     })
-
                 });
                 const responseJson = await response.json();
                 if (responseJson.msj == "El registro ha sido eliminado") {
@@ -71,7 +74,7 @@ const PresentacionesScreen = ({navigation}) => {
                     setFilteredData([])
                     setSearch('')
                 } else {
-                    Alert.alert('Pharmadev',responseJson.msj)
+                    Alert.alert('Pharmadev', responseJson.msj)
                 }
                 setLoading(false);
             } catch (error) {
@@ -85,18 +88,18 @@ const PresentacionesScreen = ({navigation}) => {
             <TouchableOpacity onPress={() => getItem(item)}>
                 <View style={styles.presentacion}>
                     <View style={{ flex: 2, paddingLeft: 10 }}>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'  }} >
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }}>{item.PresentacionNombre}</Text>
                             <Icons size={26} name="trash" color="white" style={{
                                 marginRight: 30,
-                                marginBottom:10,
+                                marginBottom: 10,
                                 backgroundColor: 'red',
                                 borderRadius: 7,
                                 paddingHorizontal: 10,
                                 textAlign: 'center',
-                                textAlignVertical:'center'
+                                textAlignVertical: 'center'
                             }}
-                            onPress={_ => eliminar(item.id)} />
+                                onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, color: "#393E46" }} >{item.PresentacionDescripcion}</Text>
@@ -121,9 +124,9 @@ const PresentacionesScreen = ({navigation}) => {
     };
 
     const getItem = (item) => {
-        navigation.navigate('PresEdit', { data: item})
+        navigation.navigate('PresEdit', { data: item })
     };
-    
+
     const searchProducts = async (kword) => {
         let filteredDataS = dataSource.filter(function (item) {
             return item.PresentacionNombre.toLowerCase().includes(kword.toLowerCase());
@@ -140,7 +143,7 @@ const PresentacionesScreen = ({navigation}) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
-                <View style={{ height:100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ height: 100, backgroundColor: "#00ADB5", alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{
                         color: 'white',
                         fontSize: 22,
@@ -151,7 +154,7 @@ const PresentacionesScreen = ({navigation}) => {
                         placeholder="🔎"
                         inputStyle={{ backgroundColor: 'white', borderRadius: 7, padding: 10 }}
                         value={search}
-                        onChangeText={search => { setSearch(search);searchProducts(search)  }}
+                        onChangeText={search => { setSearch(search); searchProducts(search) }}
                     />
                 </View>
                 <View style={{ flex: 6 }}>
@@ -168,8 +171,8 @@ const PresentacionesScreen = ({navigation}) => {
                         />
                     </RefreshControl>
                 </View>
-                <View style={{ height:60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} onPress={()=>{navigation.navigate('PresAdd')}}>
+                <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
+                    <TouchableOpacity style={styles.appButtonContainer} onPress={() => { navigation.navigate('PresAdd') }}>
                         <Text style={styles.appButtonText}>AÑADIR UNA PRESENTACION</Text>
                     </TouchableOpacity>
                 </View>
@@ -200,7 +203,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         alignSelf: "center",
         textTransform: "uppercase"
-    },presentacion: {
+    }, presentacion: {
         height: 120,
         backgroundColor: "white",
         borderRadius: 7,
