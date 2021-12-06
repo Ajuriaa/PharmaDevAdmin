@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndic
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, Image, Text } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from "react-native-vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("screen");
 
 
@@ -10,7 +11,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const LaboratoriosScreen = ({navigation}) => {
+const LaboratoriosScreen = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -46,7 +47,7 @@ const LaboratoriosScreen = ({navigation}) => {
             }
         }
     };
-    const eliminar = async (LabId)=>{
+    const eliminar = async (LabId) => {
         if (!loading) {
             setLoading(true);
             try {
@@ -70,7 +71,7 @@ const LaboratoriosScreen = ({navigation}) => {
                     setFilteredData([])
                     setSearch('')
                 } else {
-                    Alert.alert('Pharmadev',responseJson.msj)
+                    Alert.alert('Pharmadev', responseJson.msj)
                 }
                 setLoading(false);
             } catch (error) {
@@ -83,23 +84,26 @@ const LaboratoriosScreen = ({navigation}) => {
         return (
             <TouchableOpacity onPress={() => getItem(item)}>
                 <View style={styles.producto}>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'  }} >
+                    <View style={{ flex: 2, paddingLeft: 10 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }}>{item.LaboratorioNombre}</Text>
                             <Icons size={26} name="trash" color="white" style={{
                                 marginRight: 30,
-                                marginBottom:10,
+                                marginBottom: 10,
                                 backgroundColor: 'red',
                                 borderRadius: 7,
                                 paddingHorizontal: 10,
                                 textAlign: 'center',
-                                textAlignVertical:'center'
+                                textAlignVertical: 'center'
                             }}
-                            onPress={_ => eliminar(item.id)} />
+                                onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, color: "#393E46" }} >{item.LaboratorioDescripcion}</Text>
                         </View>
+                    </View>
                 </View>
+
             </TouchableOpacity>
         );
     };
@@ -118,12 +122,12 @@ const LaboratoriosScreen = ({navigation}) => {
     };
 
     const getItem = (item) => {
-        // navigation.navigate('ProductScreen', { data: item})
+        navigation.navigate('LabEdit', { data: item})
     };
 
     const searchProducts = async (kword) => {
         let filteredDataS = dataSource.filter(function (item) {
-            return item.ProductoNombre.toLowerCase().includes(kword.toLowerCase());
+            return item.LaboratorioNombre.toLowerCase().includes(kword.toLowerCase());
         });
         setFilteredData(filteredDataS)
     }
@@ -166,7 +170,7 @@ const LaboratoriosScreen = ({navigation}) => {
                     </RefreshControl>
                 </View>
                 <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('LABADDSCREEN')} >
+                    <TouchableOpacity style={styles.appButtonContainer} onPress={() => navigation.navigate('LABADDSCREEN')} >
                         <Text style={styles.appButtonText}>AÑADIR UN LABORATORIO</Text>
                     </TouchableOpacity>
                 </View>
