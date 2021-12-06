@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import LABADDSCREEN from "../screens/Labs/añadir";
 import EditPScren from "../screens/Products/editar";
 import PresEdit from "../screens/Presentations/editar";
+import LabEdit from "../screens/Labs/editar";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,6 +103,18 @@ function LabsStack() {
                     },
                 }}
             /> 
+            <Stack.Screen name="LabEdit" component={LabEdit}
+                options={{
+                    title: 'Editar Laboratorio',
+                    headerStyle: {
+                        backgroundColor: '#00ADB5',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+            />
         </Stack.Navigator>
     );
 }

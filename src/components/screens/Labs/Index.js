@@ -46,19 +46,59 @@ const LaboratoriosScreen = ({navigation}) => {
             }
         }
     };
+    const eliminar = async (LabId)=>{
+        if (!loading) {
+            setLoading(true);
+            try {
+                var jsonValue = await AsyncStorage.getItem('@usuario')
+                jsonValue = JSON.parse(jsonValue)
+                const response = await fetch('http://192.168.0.2:7777/api/laboratorio/delL', {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + jsonValue.token,
+                    },
+                    body: JSON.stringify({
+                        Id: LabId
+                    })
+
+                });
+                const responseJson = await response.json();
+                if (responseJson.msj == "El registro ha sido eliminado") {
+                    getData()
+                    setFilteredData([])
+                    setSearch('')
+                } else {
+                    Alert.alert('Pharmadev',responseJson.msj)
+                }
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 
     const ItemView = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => getItem(item)}>
                 <View style={styles.producto}>
-                    <View style={{ flex: 1, paddingLeft: 10 }}>
-                        <View style={{ flex: 1, justifyContent: 'center' }} >
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'  }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }}>{item.LaboratorioNombre}</Text>
+                            <Icons size={26} name="trash" color="white" style={{
+                                marginRight: 30,
+                                marginBottom:10,
+                                backgroundColor: 'red',
+                                borderRadius: 7,
+                                paddingHorizontal: 10,
+                                textAlign: 'center',
+                                textAlignVertical:'center'
+                            }}
+                            onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, color: "#393E46" }} >{item.LaboratorioDescripcion}</Text>
                         </View>
-                    </View>
                 </View>
             </TouchableOpacity>
         );
