@@ -3,7 +3,6 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Button, Image, Input } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import defaultIMG from '../../../assets/default.jpg'
-import DatePicker from 'react-native-datepicker'
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -50,8 +49,8 @@ const LABADDSCREEN = () => {
             <ScrollView>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
 
-                    <Input label='Nombre de la farmacia' value={LaboratorioNombre} onChange={setNombre} />
-                    <Input label='Descripcion de la farmacia' value={LaboratorioDescripcion} onChange={setDescripcion} />
+                    <Input label='Nombre del laboratorio' value={LaboratorioNombre} onChange={setNombre} />
+                    <Input label='Descripcion del laboratorio' value={LaboratorioDescripcion} onChange={setDescripcion} />
 
                     <Button title='Guardar farmacia' containerStyle={{ marginBottom: 10, width: '90%' }} buttonStyle={styles.boton} onPress={pressGuardar}/>
                 </View>

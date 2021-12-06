@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, } from 'react-native';
+import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Alert, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, Image, Text } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("screen");
-
+import Icons from "react-native-vector-icons/FontAwesome";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const ProductScreen = ({navigation}) => {
+const ProductScreen = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -47,6 +47,39 @@ const ProductScreen = ({navigation}) => {
         }
     };
 
+    const eliminar = async (ProductoId)=>{
+        if (!loading) {
+            setLoading(true);
+            try {
+                var jsonValue = await AsyncStorage.getItem('@usuario')
+                jsonValue = JSON.parse(jsonValue)
+                const response = await fetch('http://192.168.0.2:7777/api/producto/delP', {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + jsonValue.token,
+                    },
+                    body: JSON.stringify({
+                        id: ProductoId
+                    })
+
+                });
+                const responseJson = await response.json();
+                if (responseJson.msj == "El registro ha sido eliminado") {
+                    getData()
+                    setFilteredData([])
+                    setSearch('')
+                } else {
+                    Alert.alert('Pharmadev',responseJson.msj)
+                }
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     const ItemView = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => getItem(item)}>
@@ -58,14 +91,25 @@ const ProductScreen = ({navigation}) => {
                         />
                     </View>
                     <View style={{ flex: 2, paddingLeft: 10 }}>
-                        <View style={{ flex: 1, justifyContent: 'center' }} >
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }}>{item.ProductoNombre}</Text>
+                            <Icons size={26} name="trash" color="white" style={{
+                                marginRight: 20,
+                                backgroundColor: 'red',
+                                borderRadius: 7,
+                                paddingHorizontal: 20,
+                                textAlign: 'center',
+                                textAlignVertical:'center'
+                            }}
+                            onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }} >L.{item.ProductoPrecio}</Text>
                         </View>
                         <View style={styles.row} >
-                            <View style={{ flex: 1 }}></View>
+                            <View style={{ flex: 1 }}>
+                                <Text>{item.Inventarios[0].InventarioFechaCaducidad.slice(0, 10)}</Text>
+                            </View>
                             <View style={{ flex: 1 }}>
                                 <View style={styles.txtContador}>
                                     <Text style={styles.txtContadorTexto}>{item.Inventarios[0].InventarioExistencia}</Text>
@@ -92,7 +136,7 @@ const ProductScreen = ({navigation}) => {
     };
 
     const getItem = (item) => {
-        // navigation.navigate('ProductScreen', { data: item})
+        navigation.navigate('EditPScren', { data: item})
     };
 
     const searchProducts = async (kword) => {
@@ -105,7 +149,7 @@ const ProductScreen = ({navigation}) => {
     const onRefresh = useCallback(() => {
         setRefreshing(true)
         getData()
-        wait(1000).then(() => setRefreshing(false));
+        wait(500).then(() => setRefreshing(false));
     }, [])
 
     return (
@@ -140,7 +184,7 @@ const ProductScreen = ({navigation}) => {
                     </RefreshControl>
                 </View>
                 <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={styles.appButtonContainer} onPress={()=>{navigation.navigate('NewPScreen')}}>
+                    <TouchableOpacity style={styles.appButtonContainer} onPress={() => { navigation.navigate('NewPScreen') }}>
                         <Text style={styles.appButtonText}>AÑADIR UN PRODUCTO</Text>
                     </TouchableOpacity>
                 </View>
@@ -199,8 +243,8 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: "uppercase",
         fontWeight: 'bold'
-    },row:{
-        flex: 1, 
+    }, row: {
+        flex: 1,
         flexDirection: "row"
     },
 })

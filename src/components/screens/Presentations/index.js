@@ -103,7 +103,7 @@ const PresentacionesScreen = ({navigation}) => {
                         fontSize: 22,
                         fontWeight: 'bold',
                         marginTop: 10
-                    }}>Presentacion</Text>
+                    }}>Presentaciones</Text>
                     <Input
                         placeholder="🔎"
                         inputStyle={{ backgroundColor: 'white', borderRadius: 7, padding: 10 }}

@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "../providers/Context";
 import { Ionicons } from '@expo/vector-icons';
 import LABADDSCREEN from "../screens/Labs/añadir";
+import EditPScren from "../screens/Products/editar";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,18 @@ function ProductStack() {
             <Stack.Screen name="NewPScreen" component={NewPScreen}
                 options={{
                     title: 'Nuevo Producto',
+                    headerStyle: {
+                        backgroundColor: '#00ADB5',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+            />
+            <Stack.Screen name="EditPScren" component={EditPScren}
+                options={{
+                    title: 'Editar Producto',
                     headerStyle: {
                         backgroundColor: '#00ADB5',
                     },
@@ -64,7 +77,7 @@ function LabsStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="LaboratoriosScreen" component={LaboratoriosScreen} options={{ headerShown: false }} />
-             <Stack.Screen name="LABADDSCREEN" component={LABADDSCREEN}
+            <Stack.Screen name="LABADDSCREEN" component={LABADDSCREEN}
                 options={{
                     title: 'Nuevo Laboratorio',
                     headerStyle: {

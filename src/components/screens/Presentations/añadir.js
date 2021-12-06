@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Button, Image, Input } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import defaultIMG from '../../../assets/default.jpg'
-import DatePicker from 'react-native-datepicker'
 import * as ImagePicker from 'expo-image-picker';
 
 const PresAdd = () => {

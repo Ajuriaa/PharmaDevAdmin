@@ -9,19 +9,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const NewPScreen = ({ navigation }) => {
-    const [nombre, setNombre] = useState('')
-    const [descripcion, setDescripcion] = useState('')
-    const [precio, setPrecio] = useState('')
-    const [existencia, setExistencia] = useState('')
-    const [url, setUrl] = useState(null)
-    const [fecha, setFecha] = useState(new Date())
+const EditPScren = ({route,navigation }) => {
+    const [nombre, setNombre] = useState(route.params.data.ProductoNombre)
+    const [descripcion, setDescripcion] = useState(route.params.data.ProductoDescripcion)
+    const [precio, setPrecio] = useState(route.params.data.ProductoPrecio.toString())
+    const [existencia, setExistencia] = useState(route.params.data.Inventarios[0].InventarioExistencia)
+    const [url, setUrl] = useState(route.params.data.productoImagen)
+    const [fecha, setFecha] = useState(new Date(route.params.data.Inventarios[0].InventarioFechaCaducidad))
     const [imagen, setImagen] = useState(null)
-    const [laboratorio, setLaboratorio] = useState('')
-    const [presentacion, setPresentacion] = useState('')
+    const [laboratorio, setLaboratorio] = useState(route.params.data.Laboratorio.id)
+    const [presentacion, setPresentacion] = useState(route.params.data.Presentacion.id)
     const [laboratorios, setLaboratorios] = useState([])
     const [presentaciones, setPresentaciones] = useState([])
     const [show, setShow] = useState(false)
+
     const getPresentaciones = async () => {
         try {
             var jsonValue = await AsyncStorage.getItem('@usuario')
@@ -80,31 +81,6 @@ const NewPScreen = ({ navigation }) => {
             quality: 1,
         });
         if (!result.cancelled) {
-            /* try {
-                let fileType = result.uri.substring(result.uri.lastIndexOf(".") + 1);
-                let formData = new FormData();
-                formData.append("photo", {
-                    uri: result.uri,
-                    name: `photo.${fileType}`,
-                    type: `image/${fileType}`
-                });
-                var jsonValue = await AsyncStorage.getItem('@usuario')
-                jsonValue = JSON.parse(jsonValue)
-                formData.append('Id', jsonValue.Id)
-                const response = await fetch('http://192.168.0.2:7777/api/usuario/profileIMG', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': 'Bearer ' + jsonValue.token,
-                    },
-                    body: formData,
-                });
-                const responseJson = await response.json();
-                setTimeout(() => setUrl(`http://192.168.0.2:7777/users/${jsonValue.Id}.png?${Math.random()}`), 1000)
-            } catch (error) {
-                console.log(error);
-            } */
             setUrl(result.uri)
             setImagen(result)
         }
@@ -129,9 +105,10 @@ const NewPScreen = ({ navigation }) => {
             formData.append('LaboratorioId', laboratorio)
             formData.append('PresentacionId', presentacion)
             formData.append('InventarioExistencia', existencia)
+            formData.append('id', route.params.data.id)
             formData.append('InventarioFechaCaducidad', fecha.toISOString().slice(0, 10))
-            const response = await fetch('http://192.168.0.2:7777/api/producto/addP', {
-                method: 'POST',
+            const response = await fetch('http://192.168.0.2:7777/api/producto/updateP', {
+                method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data',
@@ -140,7 +117,7 @@ const NewPScreen = ({ navigation }) => {
                 body: formData,
             });
             const json = await response.json();
-            json.msj === 'Registro almacenado correctamente' ? navigation.goBack() : Alert.alert('Parmdev',json.msj)
+            json.msj === 'Registro actualizado  exitosamente.' ? navigation.goBack() : Alert.alert('Parmdev',json.msj)
         } catch (error) {
             console.log(error);
         }
@@ -199,7 +176,7 @@ const NewPScreen = ({ navigation }) => {
                             return <Picker.Item label={x.PresentacionNombre} value={x.id} key={x.id} />
                         })}
                     </Picker>
-                    <Button title='Guardar producto'
+                    <Button title='Guardar Cambios'
                         containerStyle={{ marginBottom: 10, width: '95%' }}
                         buttonStyle={styles.boton}
                         onPress={pressGuardar} />
@@ -209,7 +186,7 @@ const NewPScreen = ({ navigation }) => {
     )
 }
 
-export default NewPScreen
+export default EditPScren
 
 const styles = StyleSheet.create({
     profileIMG: {
