@@ -19,6 +19,7 @@ import { AuthContext } from "../providers/Context";
 import { Ionicons } from '@expo/vector-icons';
 import LABADDSCREEN from "../screens/Labs/añadir";
 import EditPScren from "../screens/Products/editar";
+import PresEdit from "../screens/Presentations/editar";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,6 +62,18 @@ function PresentationStack() {
             <Stack.Screen name="PresAdd" component={PresAdd}
                 options={{
                     title: 'Nueva Presentacion',
+                    headerStyle: {
+                        backgroundColor: '#00ADB5',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+            />
+            <Stack.Screen name="PresEdit" component={PresEdit}
+                options={{
+                    title: 'Editar Presentacion',
                     headerStyle: {
                         backgroundColor: '#00ADB5',
                     },

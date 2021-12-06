@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, } from 'react-native';
+import { View, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Alert, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, Image, Text } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from "react-native-vector-icons/FontAwesome";
+
 const { width, height } = Dimensions.get("screen");
-
-
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -47,13 +47,56 @@ const PresentacionesScreen = ({navigation}) => {
         }
     };
 
+    const eliminar = async (PresentacionId)=>{
+        if (!loading) {
+            setLoading(true);
+            try {
+                var jsonValue = await AsyncStorage.getItem('@usuario')
+                jsonValue = JSON.parse(jsonValue)
+                const response = await fetch('http://192.168.0.2:7777/api/presentacion/delP', {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + jsonValue.token,
+                    },
+                    body: JSON.stringify({
+                        Id: PresentacionId
+                    })
+
+                });
+                const responseJson = await response.json();
+                if (responseJson.msj == "El registro ha sido eliminado") {
+                    getData()
+                    setFilteredData([])
+                    setSearch('')
+                } else {
+                    Alert.alert('Pharmadev',responseJson.msj)
+                }
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     const ItemView = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => getItem(item)}>
                 <View style={styles.presentacion}>
                     <View style={{ flex: 2, paddingLeft: 10 }}>
-                        <View style={{ flex: 1, justifyContent: 'center' }} >
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'  }} >
                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#393E46" }}>{item.PresentacionNombre}</Text>
+                            <Icons size={26} name="trash" color="white" style={{
+                                marginRight: 30,
+                                marginBottom:10,
+                                backgroundColor: 'red',
+                                borderRadius: 7,
+                                paddingHorizontal: 10,
+                                textAlign: 'center',
+                                textAlignVertical:'center'
+                            }}
+                            onPress={_ => eliminar(item.id)} />
                         </View>
                         <View style={{ flex: 1 }} >
                             <Text style={{ fontSize: 16, color: "#393E46" }} >{item.PresentacionDescripcion}</Text>
@@ -78,12 +121,12 @@ const PresentacionesScreen = ({navigation}) => {
     };
 
     const getItem = (item) => {
-        // navigation.navigate('PresentacionesScreen', { data: item})
+        navigation.navigate('PresEdit', { data: item})
     };
-
+    
     const searchProducts = async (kword) => {
         let filteredDataS = dataSource.filter(function (item) {
-            return item.ProductoNombre.toLowerCase().includes(kword.toLowerCase());
+            return item.PresentacionNombre.toLowerCase().includes(kword.toLowerCase());
         });
         setFilteredData(filteredDataS)
     }
